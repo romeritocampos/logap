@@ -1,9 +1,14 @@
 package org.cassandradb;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.ColumnDefinitions;
+import com.datastax.driver.core.ColumnDefinitions.Definition;
+import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
 public class CassandraConnection {
@@ -52,9 +57,26 @@ public class CassandraConnection {
 	
 	public Map<String, String> select (String columnName) {
 		
+		ResultSet rs = session.execute("SELECT * FROM " + columnName);
+		ColumnDefinitions cd = rs.getColumnDefinitions();
+		
+		Map<String, String> data = new LinkedHashMap<String, String>();
+		Iterator<Row> it = rs.iterator();
+		while (it.hasNext()) {
+			
+			Row row = it.next();
+			for (int i=0; i < cd.size(); i++) {
+				
+				String info = CassandraUtil.getRowDataAsString(i, row, cd.getType(i));
+				String column = cd.getName(i);
+				
+				data.put(column, info);
+			}
+			
+		}
 		
 		
-		return null;
+		return data;
 	}
 	
 	public static void main (String[] args) {
@@ -64,13 +86,24 @@ public class CassandraConnection {
 		
 		cc.connect("logap");
 		
+		/*
+		
 		Map<String, String> data = new LinkedHashMap<String, String>();
 		data.put("id","2");
 		data.put("name", "'fusca'");
 		
 		cc.insert("car", data);
+		*/
 		
 		
+		Map<String, String> data = new LinkedHashMap<String, String>();
+		data = cc.select("car");
+		
+		for (String key : data.keySet() ) {
+			
+			System.out.println(key + ":" + data.get(key));
+			
+		}
 		
 	}
 	
