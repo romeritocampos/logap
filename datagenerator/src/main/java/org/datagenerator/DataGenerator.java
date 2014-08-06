@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import org.cassandradb.CassandraConnection;
 import org.cassandradb.CassandraModel;
+import org.cassandradb.CassandraRow;
 import org.cassandradb.CassandraTable;
 import org.datagenerator.bean.Car;
 
@@ -23,7 +24,7 @@ public class DataGenerator {
 		
 	}
 	
-	public <T extends CassandraModel> void select (Class<T> model) {
+	public <T extends CassandraModel> CassandraTable select (Class<T> model) {
 		
 		Class<T> cm = model;				
 		CassandraTable table = null;
@@ -34,15 +35,18 @@ public class DataGenerator {
 			System.out.println("Error");
 		}
 		
-		
-		System.out.println("Número de Linhas: " + table.getLines());
+		return table;
 	}
 	
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException {
 		
-		DataGenerator dg = new DataGenerator("127.0.0.1", "logap");
+		DataGenerator dg = new DataGenerator("127.0.0.1", "logap");		
+		CassandraTable ct = dg.select(Car.class);
 		
-		dg.select(Car.class);
+		for (int i = 0; i < ct.getLines(); i++) {
+			CassandraRow row = ct.getRow(i);
+			System.out.println(row.toString());
+		}
 		
 	}
 	
