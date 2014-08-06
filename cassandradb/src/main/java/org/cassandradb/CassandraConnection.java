@@ -24,6 +24,9 @@ public class CassandraConnection {
 	
 	public void close () {
 		
+		session.close ();
+		cluster.close();
+		
 	}
 
 	public void insert (String columnName, Map<String, String> data) {
