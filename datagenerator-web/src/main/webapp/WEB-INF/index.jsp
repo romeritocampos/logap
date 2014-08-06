@@ -10,6 +10,8 @@
 <body>
 <f:view>
 
+	<h:outputLabel>Hello!</h:outputLabel>
+
 </f:view>
 </body>
 </html>
