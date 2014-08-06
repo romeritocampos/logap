@@ -2,11 +2,12 @@ package org.cassandradb;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ColumnDefinitions;
-import com.datastax.driver.core.ColumnDefinitions.Definition;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
@@ -55,28 +56,32 @@ public class CassandraConnection {
 		
 	}
 	
-	public Map<String, String> select (String columnName) {
+	public List<List<String>> select (String columnName) {
 		
 		ResultSet rs = session.execute("SELECT * FROM " + columnName);
 		ColumnDefinitions cd = rs.getColumnDefinitions();
 		
-		Map<String, String> data = new LinkedHashMap<String, String>();
+		List<List<String>> lines = new LinkedList<List<String>>();
 		Iterator<Row> it = rs.iterator();
+		
+		int line=0; 
 		while (it.hasNext()) {
 			
-			Row row = it.next();
+			Row row = it.next();			
+			lines.add(new LinkedList<String>());
+			
+			List tmp_line = lines.get(line);
 			for (int i=0; i < cd.size(); i++) {
 				
 				String info = CassandraUtil.getRowDataAsString(i, row, cd.getType(i));
-				String column = cd.getName(i);
-				
-				data.put(column, info);
+				tmp_line.add(info);				
 			}
 			
+			++line;
+			
 		}
-		
-		
-		return data;
+			
+		return lines;
 	}
 	
 	public static void main (String[] args) {
@@ -96,13 +101,10 @@ public class CassandraConnection {
 		*/
 		
 		
-		Map<String, String> data = new LinkedHashMap<String, String>();
-		data = cc.select("car");
+		List<List<String>> lines = cc.select("car");
 		
-		for (String key : data.keySet() ) {
-			
-			System.out.println(key + ":" + data.get(key));
-			
+		for (List<String> line : lines) {
+			System.out.println(line);
 		}
 		
 	}
