@@ -1,6 +1,5 @@
 package org.cassandradb;
 
-import java.sql.Date;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedHashMap;

@@ -27,5 +27,6 @@
 
   <modules>
     <module>cassandradb</module>
+    <module>datagenerator</module>
   </modules>
 </project>
