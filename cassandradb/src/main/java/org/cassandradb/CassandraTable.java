@@ -1,25 +1,26 @@
 package org.cassandradb;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 public class CassandraTable {
 
-	private List<List<String>> data;
+	private List<CassandraRow> data;
 	
 	public CassandraTable() {
 		
-		data = new LinkedList<List<String>>();
+		data = new LinkedList<CassandraRow>();
 		
 	}
 	
-	public void insertRow (List<String> line) {
+	public void insertRow (CassandraRow line) {
 		
 		data.add(line);
 		
 	}
 	
-	public List<String> getLine(int index) {
+	public CassandraRow getRow(int index) {
 		
 		if (index >= data.size() || index < data.size()) {
 			return data.get(index);
