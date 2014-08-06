@@ -1,5 +1,7 @@
 package org.cassandradb;
 
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -52,6 +54,8 @@ public class CassandraConnection {
 		
 		insert += columnName + columns + " VALUES " + info;
 		
+		System.out.println(insert);
+		
 		session.execute(insert);
 		
 	}
@@ -70,7 +74,7 @@ public class CassandraConnection {
 			Row row = it.next();			
 			lines.add(new LinkedList<String>());
 			
-			List tmp_line = lines.get(line);
+			List<String> tmp_line = lines.get(line);
 			for (int i=0; i < cd.size(); i++) {
 				
 				String info = CassandraUtil.getRowDataAsString(i, row, cd.getType(i));
@@ -91,17 +95,18 @@ public class CassandraConnection {
 		
 		cc.connect("logap");
 		
-		/*
+		
 		
 		Map<String, String> data = new LinkedHashMap<String, String>();
-		data.put("id","2");
-		data.put("name", "'fusca'");
+		data.put("id_carro","2");
+		data.put("time", String.valueOf(Calendar.getInstance().getTime().getTime()) );
+		data.put("speed", "150.5");	
 		
-		cc.insert("car", data);
-		*/
+		cc.insert("car_speed", data);
 		
 		
-		List<List<String>> lines = cc.select("car");
+		
+		List<List<String>> lines = cc.select("car_speed");
 		
 		for (List<String> line : lines) {
 			System.out.println(line);
