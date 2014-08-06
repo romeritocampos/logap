@@ -59,32 +59,30 @@ public class CassandraConnection {
 		
 	}
 	
-	public List<List<String>> select (String columnName) {
+	public CassandraTable select (String columnName) {
 		
 		ResultSet rs = session.execute("SELECT * FROM " + columnName);
 		ColumnDefinitions cd = rs.getColumnDefinitions();
 		
-		List<List<String>> lines = new LinkedList<List<String>>();
+		CassandraTable table = new CassandraTable();
 		Iterator<Row> it = rs.iterator();
-		
-		int line=0; 
+		 
 		while (it.hasNext()) {
 			
 			Row row = it.next();			
-			lines.add(new LinkedList<String>());
+			//lines.add(new LinkedList<String>());
 			
-			List<String> tmp_line = lines.get(line);
+			List<String> tmp_line = new LinkedList<String>();			
 			for (int i=0; i < cd.size(); i++) {
 				
 				String info = CassandraUtil.getRowDataAsString(i, row, cd.getType(i));
 				tmp_line.add(info);				
-			}
-			
-			++line;
+			}			
+			table.insertRow(new CassandraRow(tmp_line));
 			
 		}
 			
-		return lines;
+		return table;
 	}
 	
 	public static void main (String[] args) {
@@ -105,10 +103,16 @@ public class CassandraConnection {
 		
 		
 		
-		List<List<String>> lines = cc.select("car_speed");
+		CassandraTable table = cc.select("car_speed");
 		
-		for (List<String> line : lines) {
-			System.out.println(line);
+		for (int i=0; i < table.getLines(); i++) {
+			
+			CassandraRow row = table.getRow(i);
+			for (int j=0; j < row.size(); j++) {
+				System.out.print(row.getColumn(j));
+			}
+			System.out.println();
+			
 		}
 		
 	}
