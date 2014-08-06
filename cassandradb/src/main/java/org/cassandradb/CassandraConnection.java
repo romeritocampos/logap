@@ -16,7 +16,9 @@ public class CassandraConnection {
 		
 	}
 	
-	public void connect () {
+	public void connect (String keyspace) {
+		
+		session = cluster.connect(keyspace);		
 		
 	}
 	
