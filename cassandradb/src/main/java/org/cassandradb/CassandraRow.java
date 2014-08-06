@@ -28,4 +28,11 @@ public class CassandraRow {
 	public Iterator<String> iterator () {
 		return row.iterator();
 	}
+	
+	@Override
+	public String toString () {
+		
+		String str = row.toString();		
+		return "("+str.substring(1,str.length()-1)+")";		
+	}
 }
